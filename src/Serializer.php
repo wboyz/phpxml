@@ -11,7 +11,7 @@ use Wboyz\PhpXml\Attributes\XmlContent;
 
 class Serializer
 {
-    public function toXml($object, $dom = null, $root = null)
+    public function serialize($object, $dom = null, $root = null)
     {
         $reflection = new ReflectionClass($object);
         $properties = $reflection->getProperties();
@@ -21,7 +21,7 @@ class Serializer
         }
 
         if ($root === null) {
-            $rootName = $this->getXmlElementName($reflection) ?? $reflection->getShortName();
+            $rootName = $this->getXmlElementName($reflection, XmlElement::class) ?? $reflection->getShortName();
             $root = $dom->createElement($rootName);
             $dom->appendChild($root);
         }
@@ -29,18 +29,17 @@ class Serializer
         $contentProperty = null;
 
         foreach ($properties as $property) {
-            $name = $this->getXmlElementName($property) ?? $property->getName();
             $value = $property->getValue($object);
 
-            if ($property->getAttributes(XmlContent::class)) {
+            if ($name = $this->getXmlElementName($property, XmlContent::class)) {
                 $contentProperty = $property;
-            } elseif ($property->getAttributes(XmlAttribute::class)) {
+            } elseif ($name = $this->getXmlElementName($property, XmlAttribute::class)) {
                 $root->setAttribute($name, $value);
-            } else {
+            } elseif ($name = $this->getXmlElementName($property, XmlElement::class)) {
                 if (is_object($value)) {
                     $child = $dom->createElement($name);
                     $root->appendChild($child);
-                    $this->toXml($value, $dom, $child);
+                    $this->serialize($value, $dom, $child);
                 } else {
                     $element = $dom->createElement($name, $value);
                     $root->appendChild($element);
@@ -56,12 +55,9 @@ class Serializer
         return $dom->saveXML();
     }
 
-    private function getXmlElementName(ReflectionClass|ReflectionProperty $reflection)
+    private function getXmlElementName(ReflectionClass|ReflectionProperty $reflection, string $attributeClass)
     {
-        $attributes = $reflection->getAttributes(XmlElement::class);
-        if (!empty($attributes)) {
-            return $attributes[0]->newInstance()->name;
-        }
-        return null;
+        $attributes = $reflection->getAttributes($attributeClass);
+        return $attributes[0]?->newInstance()?->name;
     }
 }

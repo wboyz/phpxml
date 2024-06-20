@@ -25,7 +25,7 @@ class Sample
     public string $aboutMe;
 
     #[XmlElement(name: "Address")]
-    public Address $address;
+    public ?Address $address = null;
 }
 
 #[XmlElement(name: "Address")]
@@ -52,5 +52,5 @@ $sample->address->city = 'New York';
 $sample->address->state = 'NY';
 
 $serializer = new Serializer();
-$xml = $serializer->toXml($sample);
+$xml = $serializer->serialize($sample);
 file_put_contents('sample.xml', $xml);
