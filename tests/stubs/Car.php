@@ -5,21 +5,21 @@ namespace Wboyz\PhpXml\Tests\Stubs;
 use Wboyz\PhpXml\Attributes\XmlAttribute;
 use Wboyz\PhpXml\Attributes\XmlElement;
 
-#[XmlElement("Vehicle")]
+#[XmlElement(name: 'Vehicle')]
 class Car
 {
     #[XmlAttribute]
     public $id;
 
-    #[XmlElement("Brand")]
+    #[XmlElement('Brand')]
     public $make;
 
-    #[XmlElement("Type")]
+    #[XmlElement(name: 'Type')]
     public $model;
 
-    #[XmlElement("ProductionYear")]
+    #[XmlElement(name: 'ProductionYear')]
     public $year;
 
-    #[XmlElement("Paint")]
+    #[XmlElement(name: 'Paint')]
     public $color;
 }

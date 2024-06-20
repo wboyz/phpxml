@@ -8,18 +8,18 @@ use Wboyz\PhpXml\Attributes\XmlElement;
 
 class Person
 {
-    #[XmlAttribute(name: "Id")]
-    public int $id;
+    #[XmlAttribute(name: 'Id')]
+    public string $id = '';
 
-    #[XmlElement(name: "Name")]
-    public string $name;
+    #[XmlElement(name: 'Name')]
+    public string $name = '';
 
-    #[XmlElement(name: "Age")]
-    public string $age;
+    #[XmlElement(name: 'Age')]
+    public string $age = '';
 
-    #[XmlContent(name: "AboutMe")]
-    public string $aboutMe;
+    #[XmlContent(name: 'AboutMe')]
+    public string $aboutMe = '';
 
-    #[XmlElement(name: "Address")]
+    #[XmlElement(name: 'Address')]
     public ?Address $address = null;
 }

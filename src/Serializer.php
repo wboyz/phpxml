@@ -27,15 +27,15 @@ class Serializer
             $dom->appendChild($root);
         }
 
+        $contentNode = null;
         foreach ($properties as $property) {
             $value = $property->getValue($object);
 
             if (!empty($property->getAttributes(XmlContent::class))) {
                 $contentNode = $dom->createTextNode($property->getValue($object));
-                $root->appendChild($contentNode);
-            } elseif ($name = $this->getXmlElementName($property, XmlAttribute::class)) {
+            } elseif ($name = $this->getPropertyName($property, XmlAttribute::class)) {
                 $root->setAttribute($name, $value);
-            } elseif ($name = $this->getXmlElementName($property, XmlElement::class)) {
+            } elseif ($name = $this->getPropertyName($property, XmlElement::class)) {
                 if (is_object($value)) {
                     $child = $dom->createElement($name);
                     $root->appendChild($child);
@@ -47,10 +47,55 @@ class Serializer
             }
         }
 
+        if ($contentNode) {
+            $root->appendChild($contentNode);
+        }
+
         return $dom->saveXML();
     }
 
-    private function getXmlElementName(ReflectionProperty $property, string $attributeClass)
+    public function deserialize(string $xml, string $className)
+    {
+        $dom = new DOMDocument();
+        $dom->loadXML($xml);
+        $root = $dom->documentElement;
+        return $this->deserializeNode($root, $className);
+    }
+
+    private function deserializeNode(DOMElement $node, string $className)
+    {
+        $reflection = new ReflectionClass($className);
+        $object = $reflection->newInstanceWithoutConstructor();
+        foreach ($reflection->getProperties() as $property) {
+            $property->setAccessible(true);
+            if (!empty($property->getAttributes(XmlAttribute::class))) {
+                $name = $this->getPropertyName($property, XmlAttribute::class);
+                $property->setValue($object, $node->getAttribute($name));
+            } elseif (!empty($property->getAttributes(XmlElement::class))) {
+                $name = $this->getPropertyName($property, XmlElement::class);
+                $childNode = $node->getElementsByTagName($name)->item(0);
+                if ($childNode) {
+                    if ($childNode->hasChildNodes() && $childNode->childNodes->length > 1) {
+                        $property->setValue($object, $this->deserializeNode($childNode, $property->getType()->getName()));
+                    } else {
+                        $property->setValue($object, $childNode->nodeValue);
+                    }
+                }
+            } elseif (!empty($property->getAttributes(XmlContent::class))) {
+                $textContent = '';
+                foreach ($node->childNodes as $childNode) {
+                    if ($childNode->nodeType === XML_TEXT_NODE) {
+                        $textContent = $childNode->nodeValue;
+                        break;
+                    }
+                }
+                $property->setValue($object, $textContent);
+            }
+        }
+        return $object;
+    }
+
+    private function getPropertyName(ReflectionProperty $property, string $attributeClass)
     {
         $attributes = $property->getAttributes($attributeClass);
         if (empty($attributes)) {
