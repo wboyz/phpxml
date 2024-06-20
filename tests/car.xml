@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Vehicle id="1">
-    <Brand>Toyota</Brand>
-    <Type>Corolla</Type>
-    <ProductionYear>2021</ProductionYear>
-    <Paint>Red</Paint>
-</Vehicle>

@@ -3,6 +3,13 @@
     "description": "This is a package to serialize and deserialize php to xml.",
     "type": "library",
     "license": "MIT",
+    "keywords": ["xml", "php", "serialize", "deserialize"],
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.2"
+    },
     "autoload": {
         "psr-4": {
             "Wboyz\\PhpXml\\": "src/",
@@ -14,8 +21,5 @@
             "name": "eetir",
             "email": "bertalan.verebelyi@gmail.com"
         }
-    ],
-    "require-dev": {
-        "phpunit/phpunit": "^11.2"
-    }
+    ]
 }

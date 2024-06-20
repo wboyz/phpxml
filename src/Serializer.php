@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Wboyz\PhpXml;
 
 use ReflectionClass;
@@ -34,14 +36,14 @@ class Serializer
             if (!empty($property->getAttributes(XmlContent::class))) {
                 $contentNode = $dom->createTextNode($property->getValue($object));
             } elseif ($name = $this->getPropertyName($property, XmlAttribute::class)) {
-                $root->setAttribute($name, $value);
+                $root->setAttribute($name, (string) $value);
             } elseif ($name = $this->getPropertyName($property, XmlElement::class)) {
                 if (is_object($value)) {
                     $child = $dom->createElement($name);
                     $root->appendChild($child);
                     $this->serialize($value, $dom, $child);
                 } else {
-                    $element = $dom->createElement($name, $value);
+                    $element = $dom->createElement($name, (string) $value);
                     $root->appendChild($element);
                 }
             }

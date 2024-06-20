@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Wboyz\PhpXml\Tests\Stubs;
 
 use Wboyz\PhpXml\Attributes\XmlElement;

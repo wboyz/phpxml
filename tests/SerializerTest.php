@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Wboyz\PhpXml\Tests;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -17,7 +19,7 @@ class SerializerTest extends TestCase
         $person = new Person();
         $person->id = 1;
         $person->name = 'Test Name';
-        $person->age = '30';
+        $person->age = 30;
         $person->aboutMe = 'About Test';
         $person->address = new Address();
         $person->address->country = 'USA';
@@ -45,7 +47,7 @@ class SerializerTest extends TestCase
         $car->id = 1;
         $car->make = 'Toyota';
         $car->model = 'Corolla';
-        $car->year = '2021';
+        $car->year = 2021;
         $car->color = 'Red';
 
         $serializer = new Serializer();
