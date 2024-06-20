@@ -85,11 +85,10 @@ class Serializer
                 $textContent = '';
                 foreach ($node->childNodes as $childNode) {
                     if ($childNode->nodeType === XML_TEXT_NODE) {
-                        $textContent = $childNode->nodeValue;
-                        break;
+                        $textContent .= $childNode->nodeValue;
                     }
                 }
-                $property->setValue($object, $textContent);
+                $property->setValue($object, trim($textContent));
             }
         }
         return $object;

@@ -9,13 +9,13 @@ use Wboyz\PhpXml\Attributes\XmlElement;
 class Person
 {
     #[XmlAttribute(name: 'Id')]
-    public string $id = '';
+    public int $id;
 
     #[XmlElement(name: 'Name')]
     public string $name = '';
 
     #[XmlElement(name: 'Age')]
-    public string $age = '';
+    public int $age;
 
     #[XmlContent(name: 'AboutMe')]
     public string $aboutMe = '';
