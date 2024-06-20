@@ -5,7 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Wboyz\\PhpXml\\": "src/"
+            "Wboyz\\PhpXml\\": "src/",
+            "Wboyz\\PhpXml\\Tests\\": "tests/"
         }
     },
     "authors": [
