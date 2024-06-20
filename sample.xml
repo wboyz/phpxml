@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sample id="1">
+    <Name>John Doe</Name>
+    <Age>30</Age>
+    <Address>
+        <Country>USA</Country>
+        <City>New York</City>
+        <State>NY</State>
+    </Address>I am a
+</Sample>
