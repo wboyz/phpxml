@@ -7,13 +7,26 @@ namespace Wboyz\PhpXml;
 use ReflectionClass;
 use DOMDocument;
 use DOMElement;
-use ReflectionProperty;
 use Wboyz\PhpXml\Attributes\XmlElement;
 use Wboyz\PhpXml\Attributes\XmlAttribute;
 use Wboyz\PhpXml\Attributes\XmlContent;
+use Wboyz\PhpXml\Strategies\XmlAttributeStrategy;
+use Wboyz\PhpXml\Strategies\XmlElementStrategy;
+use Wboyz\PhpXml\Strategies\XmlContentStrategy;
 
 class Serializer
 {
+    private array $strategies;
+
+    public function __construct()
+    {
+        $this->strategies = [
+            XmlAttribute::class => new XmlAttributeStrategy(),
+            XmlElement::class => new XmlElementStrategy(),
+            XmlContent::class => new XmlContentStrategy(),
+        ];
+    }
+
     public function serialize(object $object, DOMDocument $dom = null, DOMElement $root = null)
     {
         $reflection = new ReflectionClass($object);
@@ -24,85 +37,60 @@ class Serializer
         }
 
         if ($root === null) {
-            $rootName = $this->getRootName($reflection);
+            $rootName = $this->getRootName($reflection); // Assuming getRootName() is implemented
             $root = $dom->createElement($rootName);
             $dom->appendChild($root);
         }
 
-        $contentNode = null;
         foreach ($properties as $property) {
-            $value = $property->getValue($object);
-
-            if (!empty($property->getAttributes(XmlContent::class))) {
-                $contentNode = $dom->createTextNode($property->getValue($object));
-            } elseif ($name = $this->getPropertyName($property, XmlAttribute::class)) {
-                $root->setAttribute($name, (string) $value);
-            } elseif ($name = $this->getPropertyName($property, XmlElement::class)) {
-                if (is_object($value)) {
-                    $child = $dom->createElement($name);
-                    $root->appendChild($child);
-                    $this->serialize($value, $dom, $child);
-                } else {
-                    $element = $dom->createElement($name, (string) $value);
-                    $root->appendChild($element);
+            $property->setAccessible(true);
+            foreach ($this->strategies as $attributeClass => $strategy) {
+                if ($attribute = $property->getAttributes($attributeClass)[0] ?? null) {
+                    $nestedObject = $property->getValue($object);
+                    if (is_object($nestedObject)) {
+                        $this->serialize($nestedObject, $dom, null);
+                        break;
+                    }
+                    $strategy->serialize($property, $object, $dom, $root, $attribute->newInstance());
+                    break;
                 }
             }
-        }
-
-        if ($contentNode) {
-            $root->appendChild($contentNode);
         }
 
         return $dom->saveXML();
     }
 
-    public function deserialize(string $xml, string $className)
+    public function deserialize($xml, $className)
     {
         $dom = new DOMDocument();
         $dom->loadXML($xml);
         $root = $dom->documentElement;
+
         return $this->deserializeNode($root, $className);
     }
 
     private function deserializeNode(DOMElement $node, string $className)
     {
+        $object = new $className();
         $reflection = new ReflectionClass($className);
-        $object = $reflection->newInstanceWithoutConstructor();
-        foreach ($reflection->getProperties() as $property) {
+        $properties = $reflection->getProperties();
+
+        foreach ($properties as $property) {
             $property->setAccessible(true);
-            if (!empty($property->getAttributes(XmlAttribute::class))) {
-                $name = $this->getPropertyName($property, XmlAttribute::class);
-                $property->setValue($object, $node->getAttribute($name));
-            } elseif (!empty($property->getAttributes(XmlElement::class))) {
-                $name = $this->getPropertyName($property, XmlElement::class);
-                $childNode = $node->getElementsByTagName($name)->item(0);
-                if ($childNode) {
-                    if ($childNode->hasChildNodes() && $childNode->childNodes->length > 1) {
-                        $property->setValue($object, $this->deserializeNode($childNode, $property->getType()->getName()));
-                    } else {
-                        $property->setValue($object, $childNode->nodeValue);
+            foreach ($this->strategies as $attributeClass => $strategy) {
+                if ($attribute = $property->getAttributes($attributeClass)[0] ?? null) {
+                    if (class_exists($property->getType()->getName())) {
+                        $property->setValue($object, $this->deserializeNode($node, $property->getType()->getName()));
+                        break;
                     }
+
+                    $strategy->deserialize($property, $node, $object, $attribute->newInstance());
+                    break;
                 }
-            } elseif (!empty($property->getAttributes(XmlContent::class))) {
-                $textContent = '';
-                foreach ($node->childNodes as $childNode) {
-                    if ($childNode->nodeType === XML_TEXT_NODE) {
-                        $textContent .= $childNode->nodeValue;
-                    }
-                }
-                $property->setValue($object, trim($textContent));
             }
         }
-        return $object;
-    }
 
-    private function getPropertyName(ReflectionProperty $property, string $attributeClass)
-    {
-        $attributes = $property->getAttributes($attributeClass);
-        if (empty($attributes)) {
-            return null;
-        }
-        return $attributes[0]->newInstance()->name ?: $property->getName();
+        return $object;
     }
 
     private function getRootName(ReflectionClass $class)

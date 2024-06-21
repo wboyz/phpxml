@@ -9,5 +9,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_CLASS)]
 class XmlElement
 {
-    public function __construct(public ?string $name = null) {}
+    public function __construct(public ?string $name = null)
+    {
+    }
 }

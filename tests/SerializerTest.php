@@ -79,6 +79,7 @@ class SerializerTest extends TestCase
         $serializer = new Serializer();
 
         $deserializedPerson = $serializer->deserialize($xml, Person::class);
+
         $this->assertEquals(1, $deserializedPerson->id);
         $this->assertEquals('Test Name', $deserializedPerson->name);
         $this->assertEquals(30, $deserializedPerson->age);

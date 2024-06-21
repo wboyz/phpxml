@@ -11,17 +11,17 @@ use Wboyz\PhpXml\Attributes\XmlElement;
 class Car
 {
     #[XmlAttribute]
-    public int $id;
+    public int $id = 0;
 
     #[XmlElement('Brand')]
-    public string $make;
+    public string $make = '';
 
     #[XmlElement(name: 'Type')]
-    public string $model;
+    public string $model = '';
 
     #[XmlElement(name: 'ProductionYear')]
-    public int $year;
+    public int $year = 0;
 
     #[XmlElement(name: 'Paint')]
-    public string $color;
+    public string $color = '';
 }
