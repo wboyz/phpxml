@@ -18,7 +18,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Wboyz\\PhpXml\\": "src/",
+            "Wboyz\\PhpXml\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Wboyz\\PhpXml\\Tests\\": "tests/"
         }
     },
