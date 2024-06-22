@@ -16,6 +16,13 @@ use Wboyz\PhpXml\Tests\Stubs\Food;
 
 class SerializerTest extends TestCase
 {
+    private Serializer $serializer;
+
+    protected function setUp(): void
+    {
+        $this->serializer = new Serializer();
+    }
+
     public function test_serialize_with_default()
     {
         $person = new Person();
@@ -28,9 +35,7 @@ class SerializerTest extends TestCase
         $person->address->city = 'New York';
         $person->address->state = 'NY';
 
-        $serializer = new Serializer();
-
-        $xml = $serializer->serialize($person);
+        $xml = $this->serializer->serialize($person);
 
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
 <Person Id="1"><Name>Test Name</Name><Age>30</Age>About Test<Address><Country>USA</Country><City>New York</City><State>NY</State></Address></Person>', $xml);
@@ -45,9 +50,7 @@ class SerializerTest extends TestCase
         $car->year = 2021;
         $car->color = 'Red';
 
-        $serializer = new Serializer();
-
-        $xml = $serializer->serialize($car);
+        $xml = $this->serializer->serialize($car);
 
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
 <Vehicle id="1"><Brand>Toyota</Brand><Type>Corolla</Type><ProductionYear>2021</ProductionYear><Paint>Red</Paint></Vehicle>
@@ -68,9 +71,7 @@ class SerializerTest extends TestCase
                 About Test
             </Person>';
 
-        $serializer = new Serializer();
-
-        $deserializedPerson = $serializer->deserialize($xml, Person::class);
+        $deserializedPerson = $this->serializer->deserialize($xml, Person::class);
 
         $this->assertEquals(1, $deserializedPerson->id);
         $this->assertEquals('Test Name', $deserializedPerson->name);
@@ -83,8 +84,6 @@ class SerializerTest extends TestCase
 
     public function test_deserialize_with_car()
     {
-        $serializer = new Serializer();
-
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
                 <Vehicle id="1">
                     <Brand>Toyota</Brand>
@@ -93,7 +92,7 @@ class SerializerTest extends TestCase
                     <Paint>Red</Paint>
                 </Vehicle>';
 
-        $deserializedCar = $serializer->deserialize($xml, Car::class);
+        $deserializedCar = $this->serializer->deserialize($xml, Car::class);
 
         $this->assertEquals(1, $deserializedCar->id);
         $this->assertEquals('Toyota', $deserializedCar->make);
@@ -116,9 +115,7 @@ class SerializerTest extends TestCase
         $animal->sounds = ['Bark', 'Woof'];
         $animal->foods = [$food1, $food2];
 
-        $serializer = new Serializer();
-
-        $xml = $serializer->serialize($animal);
+        $xml = $this->serializer->serialize($animal);
 
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
 <Animal Id="1"><Name>Dog</Name><Sound>Bark</Sound><Sound>Woof</Sound><Food><Name>Bone</Name><Price>5.99</Price></Food><Food><Name>Meat</Name><Price>10.99</Price></Food></Animal>', $xml);
