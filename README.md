@@ -89,6 +89,29 @@ To run tests, use PHPUnit:
 ./vendor/bin/phpunit
 ```
 
+## Testing in Docker
+
+To run tests inside a Docker container, follow these steps:
+
+1. Build the Docker image for the application (if you haven't already). Ensure you are in the project root directory and run:
+
+    ```sh
+    docker build -t php-xml-dev .
+    ```
+
+2. Once the image is built, you can run the composer install inside a Docker container using the following command:
+
+    ```sh
+    docker run --rm -v ${PWD}:/app php-xml-dev composer install
+    docker run --rm -v ${PWD}:/app php-xml-dev ./vendor/bin/phpunit tests/
+    ```
+
+3. After the composer install you can run the tests:
+
+    ```sh
+    docker run --rm -v ${PWD}:/app php-xml-dev ./vendor/bin/phpunit tests/
+    ```
+
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/license/MIT).
