@@ -13,7 +13,11 @@ class XmlElementStrategy implements AttributeStrategy
     public function serialize($property, $object, DOMDocument $dom, DOMElement $root, $attribute)
     {
         $propertyName = $attribute->name ?: $property->getName();
-        $elementValue = $property->getValue($object);
+        if (is_object($object)) {
+            $elementValue = $property->getValue($object);
+        } else {
+            $elementValue = $object;
+        }
         $element = $dom->createElement($propertyName, (string) $elementValue);
         $root->appendChild($element);
     }

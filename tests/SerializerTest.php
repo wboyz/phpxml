@@ -11,6 +11,8 @@ use Wboyz\PhpXml\Serializer;
 use Wboyz\PhpXml\Tests\Stubs\Person;
 use Wboyz\PhpXml\Tests\Stubs\Address;
 use Wboyz\PhpXml\Tests\Stubs\Car;
+use Wboyz\PhpXml\Tests\Stubs\Animal;
+use Wboyz\PhpXml\Tests\Stubs\Food;
 
 class SerializerTest extends TestCase
 {
@@ -30,15 +32,8 @@ class SerializerTest extends TestCase
 
         $xml = $serializer->serialize($person);
 
-        $this->assertStringContainsString('<Person Id="1">', $xml);
-        $this->assertStringContainsString('<Name>Test Name</Name>', $xml);
-        $this->assertStringContainsString('<Age>30</Age>', $xml);
-        $this->assertStringContainsString('About Test', $xml);
-        $this->assertStringContainsString('<Address>', $xml);
-        $this->assertStringContainsString('<Country>USA</Country>', $xml);
-        $this->assertStringContainsString('<City>New York</City>', $xml);
-        $this->assertStringContainsString('<State>NY</State>', $xml);
-        $this->assertStringContainsString('</Person>', $xml);
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
+<Person Id="1"><Name>Test Name</Name><Age>30</Age>About Test<Address><Country>USA</Country><City>New York</City><State>NY</State></Address></Person>', $xml);
     }
 
     public function test_serialize_with_custom_names()
@@ -54,12 +49,9 @@ class SerializerTest extends TestCase
 
         $xml = $serializer->serialize($car);
 
-        $this->assertStringContainsString('<Vehicle id="1">', $xml);
-        $this->assertStringContainsString('<Brand>Toyota</Brand>', $xml);
-        $this->assertStringContainsString('<Type>Corolla</Type>', $xml);
-        $this->assertStringContainsString('<ProductionYear>2021</ProductionYear>', $xml);
-        $this->assertStringContainsString('<Paint>Red</Paint>', $xml);
-        $this->assertStringContainsString('</Vehicle>', $xml);
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
+<Vehicle id="1"><Brand>Toyota</Brand><Type>Corolla</Type><ProductionYear>2021</ProductionYear><Paint>Red</Paint></Vehicle>
+', $xml);
     }
 
     public function test_deserialize_with_default_data()
@@ -108,5 +100,27 @@ class SerializerTest extends TestCase
         $this->assertEquals('Corolla', $deserializedCar->model);
         $this->assertEquals(2021, $deserializedCar->year);
         $this->assertEquals('Red', $deserializedCar->color);
+    }
+
+    public function test_array_serialize()
+    {
+        $food1 = new Food();
+        $food1->name = 'Bone';
+        $food1->price = 5.99;
+        $food2 = new Food();
+        $food2->name = 'Meat';
+        $food2->price = 10.99;
+        $animal = new Animal();
+        $animal->id = 1;
+        $animal->name = 'Dog';
+        $animal->sounds = ['Bark', 'Woof'];
+        $animal->foods = [$food1, $food2];
+
+        $serializer = new Serializer();
+
+        $xml = $serializer->serialize($animal);
+
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
+<Animal Id="1"><Name>Dog</Name><Sound>Bark</Sound><Sound>Woof</Sound><Food><Name>Bone</Name><Price>5.99</Price></Food><Food><Name>Meat</Name><Price>10.99</Price></Food></Animal>', $xml);
     }
 }

@@ -27,7 +27,7 @@ class Serializer
         ];
     }
 
-    public function serialize(object $object, DOMDocument $dom = null, DOMElement $root = null)
+    public function serialize(object $object, DOMDocument $dom = null, DOMElement $parent = null)
     {
         $reflection = new ReflectionClass($object);
         $properties = $reflection->getProperties();
@@ -36,10 +36,13 @@ class Serializer
             $dom = new DOMDocument('1.0', 'UTF-8');
         }
 
-        if ($root === null) {
-            $rootName = $this->getRootName($reflection); // Assuming getRootName() is implemented
-            $root = $dom->createElement($rootName);
+        $rootName = $this->getRootName($reflection);
+        $root = $dom->createElement($rootName);
+
+        if ($parent === null) {
             $dom->appendChild($root);
+        } else {
+            $parent->appendChild($root);
         }
 
         foreach ($properties as $property) {
@@ -47,8 +50,19 @@ class Serializer
             foreach ($this->strategies as $attributeClass => $strategy) {
                 if ($attribute = $property->getAttributes($attributeClass)[0] ?? null) {
                     $nestedObject = $property->getValue($object);
+                    if (is_array($nestedObject)) {
+                        foreach ($nestedObject as $item) {
+                            if (is_object($item)) {
+                                $this->serialize($item, $dom, $parent ?: $root);
+                                continue;
+                            }
+                            $strategy->serialize($property, $item, $dom, $root, $attribute->newInstance());
+                        }
+                        break;
+                    }
+
                     if (is_object($nestedObject)) {
-                        $this->serialize($nestedObject, $dom, null);
+                        $this->serialize($nestedObject, $dom, $parent ?: $root);
                         break;
                     }
                     $strategy->serialize($property, $object, $dom, $root, $attribute->newInstance());
