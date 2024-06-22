@@ -13,7 +13,8 @@
     },
     "scripts": {
         "lint": "phpcs --standard=phpcs.xml src/",
-        "fix": "phpcbf --standard=phpcs.xml src/"
+        "fix": "phpcbf --standard=phpcs.xml src/",
+        "test": "phpunit tests"
     },
     "autoload": {
         "psr-4": {
