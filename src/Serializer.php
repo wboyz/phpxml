@@ -7,12 +7,14 @@ namespace Wboyz\PhpXml;
 use ReflectionClass;
 use DOMDocument;
 use DOMElement;
+use Wboyz\PhpXml\Attributes\XmlArray;
 use Wboyz\PhpXml\Attributes\XmlElement;
 use Wboyz\PhpXml\Attributes\XmlAttribute;
 use Wboyz\PhpXml\Attributes\XmlContent;
 use Wboyz\PhpXml\Strategies\XmlAttributeStrategy;
 use Wboyz\PhpXml\Strategies\XmlElementStrategy;
 use Wboyz\PhpXml\Strategies\XmlContentStrategy;
+use Wboyz\PhpXml\Strategies\XmlArrayStrategy;
 
 class Serializer
 {
@@ -24,10 +26,11 @@ class Serializer
             XmlAttribute::class => new XmlAttributeStrategy(),
             XmlElement::class => new XmlElementStrategy(),
             XmlContent::class => new XmlContentStrategy(),
+            XmlArray::class => new XmlArrayStrategy(),
         ];
     }
 
-    public function serialize(object $object, DOMDocument $dom = null, DOMElement $parent = null)
+    public function serialize(object $object, DOMDocument $dom = null, DOMElement $element = null, $container = null)
     {
         $reflection = new ReflectionClass($object);
         $properties = $reflection->getProperties();
@@ -39,10 +42,10 @@ class Serializer
         $rootName = $this->getRootName($reflection);
         $root = $dom->createElement($rootName);
 
-        if ($parent === null) {
-            $dom->appendChild($root);
+        if ($element !== null) {
+            $element->appendChild($root);
         } else {
-            $parent->appendChild($root);
+            $dom->appendChild($root);
         }
 
         foreach ($properties as $property) {
@@ -53,16 +56,16 @@ class Serializer
                     if (is_array($nestedObject)) {
                         foreach ($nestedObject as $item) {
                             if (is_object($item)) {
-                                $this->serialize($item, $dom, $parent ?: $root);
+                                $this->serialize($item, $dom, $element ?: $root, $attribute->newInstance());
                                 continue;
                             }
-                            $strategy->serialize($property, $item, $dom, $root, $attribute->newInstance());
+                            $strategy->serialize($property, $item, $dom, $root, $attribute->newInstance(), $container);
                         }
                         break;
                     }
 
                     if (is_object($nestedObject)) {
-                        $this->serialize($nestedObject, $dom, $parent ?: $root);
+                        $this->serialize($nestedObject, $dom, $element ?: $root);
                         break;
                     }
                     $strategy->serialize($property, $object, $dom, $root, $attribute->newInstance());

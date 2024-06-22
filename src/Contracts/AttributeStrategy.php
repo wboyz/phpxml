@@ -9,6 +9,6 @@ use DOMElement;
 
 interface AttributeStrategy
 {
-    public function serialize($property, $object, DOMDocument $dom, DOMElement $root, $attribute);
+    public function serialize($property, $object, DOMDocument $dom, DOMElement $root, $attribute, $container = null);
     public function deserialize($property, $node, $object, $attribute);
 }

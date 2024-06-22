@@ -10,7 +10,7 @@ use Wboyz\PhpXml\Contracts\AttributeStrategy;
 
 class XmlAttributeStrategy implements AttributeStrategy
 {
-    public function serialize($property, $object, DOMDocument $dom, DOMElement $root, $attribute)
+    public function serialize($property, $object, DOMDocument $dom, DOMElement $root, $attribute, $container = null)
     {
         $propertyName = $attribute->name ?: $property->getName();
         $attributeValue = $property->getValue($object);

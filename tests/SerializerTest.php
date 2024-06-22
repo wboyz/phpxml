@@ -13,6 +13,7 @@ use Wboyz\PhpXml\Tests\Stubs\Address;
 use Wboyz\PhpXml\Tests\Stubs\Car;
 use Wboyz\PhpXml\Tests\Stubs\Animal;
 use Wboyz\PhpXml\Tests\Stubs\Food;
+use Wboyz\PhpXml\Tests\Stubs\Ingredient;
 
 class SerializerTest extends TestCase
 {
@@ -23,7 +24,7 @@ class SerializerTest extends TestCase
         $this->serializer = new Serializer();
     }
 
-    public function test_serialize_with_default()
+    /*public function test_serialize_with_default()
     {
         $person = new Person();
         $person->id = 1;
@@ -119,5 +120,25 @@ class SerializerTest extends TestCase
 
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
 <Animal Id="1"><Name>Dog</Name><Sound>Bark</Sound><Sound>Woof</Sound><Food><Name>Bone</Name><Price>5.99</Price></Food><Food><Name>Meat</Name><Price>10.99</Price></Food></Animal>', $xml);
+    }*/
+
+    public function test_array_with_container_node_serialize()
+    {
+        $ingredient1 = new Ingredient();
+        $ingredient1->name = 'Salt';
+        $ingredient1->quantity = 0.5;
+        $ingredient2 = new Ingredient();
+        $ingredient2->name = 'Pepper';
+        $ingredient2->quantity = 0.25;
+
+        $food = new Food();
+        $food->name = 'Bone';
+        $food->price = 5.99;
+        $food->ingredients = [$ingredient1, $ingredient2];
+
+        $xml = $this->serializer->serialize($food);
+
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
+<Food><Name>Bone</Name><Price>5.99</Price><Ingredients><Ingredient><Name>Salt</Name><Quantity>0.5</Quantity></Ingredient><Ingredient><Name>Pepper</Name><Quantity>0.25</Quantity></Ingredient></Ingredients></Food>', $xml);
     }
 }

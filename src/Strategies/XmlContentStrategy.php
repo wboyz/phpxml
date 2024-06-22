@@ -10,7 +10,7 @@ use Wboyz\PhpXml\Contracts\AttributeStrategy;
 
 class XmlContentStrategy implements AttributeStrategy
 {
-    public function serialize($property, $object, DOMDocument $dom, DOMElement $root, $attribute)
+    public function serialize($property, $object, DOMDocument $dom, DOMElement $root, $attribute, $container = null)
     {
         $contentValue = $property->getValue($object);
         $contentNode = $dom->createTextNode($contentValue);
