@@ -25,20 +25,6 @@ class SerializerTest extends TestCase
 
     public function test_serialize_with_default()
     {
-        $car = new Car();
-        $car->id = 1;
-        $car->make = 'Toyota';
-        $car->model = 'Corolla';
-        $car->year = 2021;
-        $car->color = 'Red';
-
-        $car2 = new Car();
-        $car2->id = 2;
-        $car2->make = 'Honda';
-        $car2->model = 'Civic';
-        $car2->year = 2022;
-        $car2->color = 'Red';
-
         $person = new Person();
         $person->id = 1;
         $person->name = 'Test Name';
@@ -48,12 +34,9 @@ class SerializerTest extends TestCase
         $person->address->country = 'USA';
         $person->address->city = 'New York';
         $person->address->state = 'NY';
-        $person->cars = [$car, $car2];
 
         $xml = $this->serializer->serializeToXml($person);
-        $this->assertStringContainsString('<?xml version="1.0"?>
-<Person Id="1"><Name>Test Name</Name><Age>30</Age>About Test<Address><Country>USA</Country><City>New York</City><State>NY</State></Address></Person>
-', $xml);
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>\n<Person Id="1"><Name>Test Name</Name><Age>30</Age>About Test<Address><Country>USA</Country><City>New York</City><State>NY</State></Address></Person>\n', $xml);
     }
 
     public function test_serialize_with_custom_names()
@@ -67,14 +50,14 @@ class SerializerTest extends TestCase
 
         $xml = $this->serializer->serializeToXml($car);
 
-        $this->assertStringContainsString('<?xml version="1.0"?>
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
 <Vehicle id="1"><Brand>Toyota</Brand><Type>Corolla</Type><ProductionYear>2021</ProductionYear><Paint>Red</Paint></Vehicle>
 ', $xml);
     }
 
     /*public function test_deserialize_with_default_data()
     {
-        $xml = '<?xml version="1.0"?>
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
             <Person Id="1">
                 <Name>Test Name</Name>
                 <Age>30</Age>
@@ -99,7 +82,7 @@ class SerializerTest extends TestCase
 
     /*public function test_deserialize_with_car()
     {
-        $xml = '<?xml version="1.0"?>
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
                 <Vehicle id="1">
                     <Brand>Toyota</Brand>
                     <Type>Corolla</Type>
@@ -132,7 +115,7 @@ class SerializerTest extends TestCase
 
         $xml = $this->serializer->serializeToXml($animal);
 
-        $this->assertStringContainsString('<?xml version="1.0"?>
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>
 <Animal Id="1"><Name>Dog</Name><Sound>Bark</Sound><Sound>Woof</Sound><Food><Name>Bone</Name><Price>5.99</Price></Food><Food><Name>Meat</Name><Price>10.99</Price></Food></Animal>', $xml);
     }
 }

@@ -27,7 +27,7 @@ class Serializer
             XmlElement::class => new XmlElementStrategy(),
             XmlContent::class => new XmlContentStrategy(),
         ];
-        $this->dom = new \DOMDocument();
+        $this->dom = new \DOMDocument('1.0', 'UTF-8');
         $this->dom->preserveWhiteSpace = false;
     }
 
