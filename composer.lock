@@ -4,8 +4,148 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11a7ce0c8d38b1c06a27fd26d8a772b7",
-    "packages": [],
+    "content-hash": "424b319a7f5e8cb810a15e5871fc15bf",
+    "packages": [
+        {
+            "name": "crell/attributeutils",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Crell/AttributeUtils.git",
+                "reference": "963bcff92dc46ac23f76800896d6c973a09a1b76"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Crell/AttributeUtils/zipball/963bcff92dc46ac23f76800896d6c973a09a1b76",
+                "reference": "963bcff92dc46ac23f76800896d6c973a09a1b76",
+                "shasum": ""
+            },
+            "require": {
+                "crell/fp": "~1.0.0",
+                "php": "~8.1"
+            },
+            "require-dev": {
+                "phpbench/phpbench": "^1.2",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "~10.3",
+                "psr/cache": "^3.0",
+                "psr/cache-util": "^2.0"
+            },
+            "suggest": {
+                "psr/cache": "Caching analyzer rests is recommended, and a bridge for psr/cache is included."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crell\\AttributeUtils\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Larry Garfield",
+                    "email": "larry@garfieldtech.com",
+                    "homepage": "http://www.garfieldtech.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A robust, flexible attribute handling framework",
+            "homepage": "https://github.com/Crell/AttributeUtils",
+            "keywords": [
+                "attributes",
+                "reflection"
+            ],
+            "support": {
+                "issues": "https://github.com/Crell/AttributeUtils/issues",
+                "source": "https://github.com/Crell/AttributeUtils/tree/1.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Crell",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-02-24T16:29:35+00:00"
+        },
+        {
+            "name": "crell/fp",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Crell/fp.git",
+                "reference": "796a1eaa3e2d841f93359f9ef64e45326b68af87"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Crell/fp/zipball/796a1eaa3e2d841f93359f9ef64e45326b68af87",
+                "reference": "796a1eaa3e2d841f93359f9ef64e45326b68af87",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.1"
+            },
+            "require-dev": {
+                "phpbench/phpbench": "^1.2",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "~10.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/array.php",
+                    "src/composition.php",
+                    "src/object.php",
+                    "src/string.php"
+                ],
+                "psr-4": {
+                    "Crell\\fp\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Larry Garfield",
+                    "email": "larry@garfieldtech.com",
+                    "homepage": "http://www.garfieldtech.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Functional utilities for PHP 8 and later",
+            "homepage": "https://github.com/Crell/fp",
+            "keywords": [
+                "array",
+                "fp",
+                "functional"
+            ],
+            "support": {
+                "issues": "https://github.com/Crell/fp/issues",
+                "source": "https://github.com/Crell/fp/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Crell",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-10-28T20:06:08+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "myclabs/deep-copy",
@@ -1726,7 +1866,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.0"
+        "php": ">=8.0",
+        "ext-dom": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"

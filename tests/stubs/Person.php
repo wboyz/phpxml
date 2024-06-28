@@ -24,4 +24,7 @@ class Person
 
     #[XmlElement(name: 'Address')]
     public ?Address $address = null;
+
+    #[XmlElement(name: 'Car')]
+    public array $cars = [];
 }
